@@ -15,7 +15,7 @@ def call()
         for(int j=0;j<ipdata[ip].size;j++)
         {
             def port = ipdata[ip][j];
-            final String url = "http://"+"${ip}"+":"+${port}+"/actuator/health"
+            final String url = "http://"+"${ip}"+":"+"${port}"+"/actuator/health"
             try 
             {         
                 def response = bat(script: "@curl -s $url", returnStdout: true)
