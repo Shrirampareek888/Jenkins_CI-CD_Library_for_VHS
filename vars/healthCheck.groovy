@@ -12,9 +12,9 @@ def call()
 
         def ip = vmData[i+1][2]
         
-        for(int i=0;i<ipdata[ip].size;i++)
+        for(int j=0;j<ipdata[ip].size;j++)
         {
-            def port = ipdata[ip][i];
+            def port = ipdata[ip][j];
             final String url = "http://"+"${ip}"+":"+${port}+"/actuator/health"
             try 
             {         
