@@ -20,5 +20,5 @@ def call(url,appname)
         {
             echo "something failed"
         }
-    bat label : '', script: 'oc get route '+appname
+    bat label : '', script: 'oc get route '+"${appname}"
 }
