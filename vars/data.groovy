@@ -14,3 +14,8 @@ def app()
 {
    return ["https://github.com/yashbhangdia/Spring-Boot-Application-1.git" : "SpringBootApplication1", "https://github.com/yashbhangdia/SpringBoot-Application-2.git" : "SpringBootApplication2", "https://github.com/yashbhangdia/Liquibase_Project.git" : "Liquibase_Project"]
 }
+
+def services()
+{
+   return ["192.168.50.50":[8090, 8092], "192.168.51.51":[8090], "192.168.52.52":[8090, 8091]]
+}
