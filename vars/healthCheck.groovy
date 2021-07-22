@@ -4,42 +4,44 @@ import groovy.json.JsonSlurper
 def call()
 {
     def ips = []
-def vmData = data.vm()
-String s = ""
-for(int i=0;i<vmData.size();i++)
-{
-
-    def ip = vmData[i+1][2]
-    final String url = "http://"+"${ip}"+":8090/actuator/health"
-
-    try 
-    {         
-        def response = bat(script: "@curl -s $url", returnStdout: true)
-        JsonSlurper slurper = new JsonSlurper()
-        Map parsedJson = slurper.parseText(response)
-
-        String val = parsedJson.status
-        if(val!="UP")
-        {
-            def temp = [:]
-            temp.ip = ip
-            temp.status = val
-            ips.add(temp)  
-        }
-        s += ip + " : " + val + "^\n\n"
-
-    } 
-    catch (Exception e) 
+    def vmData = data.vm()
+    def ipdata = data.services()
+    String s = ""
+    for(int i=0;i<vmData.size();i++)
     {
-        def temp = [:]
-        temp.ip = ip
-        temp.status = "DOWN"
-        ips.add(temp)
-        s += ip + " : " + "DOWN" + "^\n\n"
-    }
 
-    }
+        def ip = vmData[i+1][2]
+        
+        for(int i=0;i<ipdata[ip].size;i++)
+        {
+            def port = ipdata[ip][i];
+            final String url = "http://"+"${ip}"+":"+${port}+"/actuator/health"
+            try 
+            {         
+                def response = bat(script: "@curl -s $url", returnStdout: true)
+                JsonSlurper slurper = new JsonSlurper()
+                Map parsedJson = slurper.parseText(response)
 
+                String val = parsedJson.status
+                if(val!="UP")
+                {
+                    def temp = [:]
+                    temp.ip = ip
+                    temp.status = val
+                    ips.add(temp)  
+                }
+                s += ip + " - " + port + " : " + val + "^\n\n"
+            }
+             catch (Exception e) 
+            {
+                def temp = [:]
+                temp.ip = ip
+                temp.status = "DOWN"
+                ips.add(temp)
+                s += ip + " - " + port + " : " + "DOWN" + "^\n\n"
+            }
+        }
+    }
     bat "@echo ${s} > logfile.txt"
 }
 
